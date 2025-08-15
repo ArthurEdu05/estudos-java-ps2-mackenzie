@@ -1,0 +1,1 @@
+Calculadora feita em aula para tratar exceptions de cálculos, focando principalmente na divisão no dado momento
