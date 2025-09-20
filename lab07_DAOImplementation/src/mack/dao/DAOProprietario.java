@@ -7,15 +7,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mack.model.Proprietario;
-
+//Implementação de CRUD
 public class DAOProprietario extends DAO{
 
+    //inserção (CREATE)
+    public void createProprietario(Proprietario p){
+        try {
+        
+            String sql_insert = "INSERT INTO PROPRIETARIOS (NOME, CPF) VALUES(?,?)";
+
+            PreparedStatement pstmt = super.connect().prepareStatement(sql_insert, Statement.RETURN_GENERATED_KEYS);
+
+            pstmt.setString(1,  p.getNome());
+            pstmt.setString(2,p.getCpf());
+
+            int qte = pstmt.executeUpdate();
+            if(qte >=1)
+                System.out.println("inserido com sucesso");
+                ResultSet rs = pstmt.getGeneratedKeys();
+                if (rs.next()) {
+                p.setId(rs.getLong(1)); 
+            }
+
+         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //consulta (READ)
     public List<Proprietario> listAllProprietarios(){
         List<Proprietario> listRet = new ArrayList<>();
         try {
             Statement stmt = super.connect().createStatement();
-
-            //Consultando
             ResultSet rs = stmt.executeQuery("SELECT * FROM PROPRIETARIOS");
 
             while(rs.next()){
@@ -32,21 +55,45 @@ public class DAOProprietario extends DAO{
         return listRet;
     }
 
-    public void create(Proprietario p){
-        try {
-        //inserindo
-            String sql_insert = "INSERT INTO PROPRIETARIOS (NOME, CPF) VALUES(?,?)";
+    //Atualizar (UPDATE)
+    public void updateProprietario(Proprietario p){
+        try{
+            String sql_update = "UPDATE proprietarios SET nome = ?, cpf = ? WHERE id = ?";
+            PreparedStatement pstmt = super.connect().prepareStatement(sql_update);
 
-            PreparedStatement pstmt = super.connect().prepareStatement(sql_insert);
+            pstmt.setString(1, p.getNome());
+            pstmt.setString(2, p.getCpf());
+            pstmt.setLong(3, p.getId());
+            int qtd =pstmt.executeUpdate();
+            if(qtd>= 1){
+                System.out.println("Atualizado com sucesso");
+            } else{
+                System.out.println("Nenhum registrado encontrado");
+            }
 
-            pstmt.setString(1,  p.getNome());
-            pstmt.setString(2,p.getCpf());
-
-            int qte = pstmt.executeUpdate();
-            if(qte >=1)
-                System.out.println("inserido com sucesso");
-         } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
         }
     }
+
+    //DELETE
+    public void deleteProprietario(Proprietario p){
+        try{
+        String sql_delete = "DELETE FROM proprietarios WHERE id = ?";
+        PreparedStatement pstmt = super.connect().prepareStatement(sql_delete);
+        
+        pstmt.setLong(1, p.getId());
+        int qtd = pstmt.executeUpdate();
+        
+        if(qtd >= 1){
+            System.out.println("Proprietario removido com sucesso");
+        } else{
+            System.out.println("Não foi possível remover");
+        }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    
 }

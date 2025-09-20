@@ -10,7 +10,7 @@ public abstract class DAO {
     protected Connection connect() throws Exception{
         if(this.connection == null || !this.connection.isClosed()){
             Class.forName("org.postgresql.Driver");
-		    String url = "jdbc:postgresql://db.pqrgzgphhdkodrdtovdq.supabase.co:5432/postgres?user=postgres&password=OlaMundo01!";
+		    String url = "jdbc:postgresql://aws-1-us-east-2.pooler.supabase.com:5432/postgres?user=postgres.pqrgzgphhdkodrdtovdq&password=OlaMundo01!";
 		
             this.connection = DriverManager.getConnection(url);
         }
