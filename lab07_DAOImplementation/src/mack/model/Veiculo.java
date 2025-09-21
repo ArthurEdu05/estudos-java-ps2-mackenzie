@@ -6,11 +6,11 @@ public class Veiculo {
     private Long proprietarioId;
     private String placa;
 
-    public void proprietario(){
+    public Veiculo(){
 
     }
 
-    public void proprietario(Long id, Long proprietarioId, String placa){
+    public Veiculo(Long id, Long proprietarioId, String placa){
         this.id = id;
         this.proprietarioId = proprietarioId;
         this.placa = placa;

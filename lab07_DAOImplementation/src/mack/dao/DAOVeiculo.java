@@ -16,7 +16,7 @@ public class DAOVeiculo extends DAO {
     public void createVeiculo(Veiculo v){
         try{
             String sql_insert = "INSERT INTO veiculos (proprietario_id, placa)VALUES (?, ?)";
-            PreparedStatement pstmt = super.connect().prepareStatement(sql_insert);
+            PreparedStatement pstmt = super.connect().prepareStatement(sql_insert, Statement.RETURN_GENERATED_KEYS);
 
             pstmt.setLong(1, v.getProprietarioId());
             pstmt.setString(2, v.getPlaca());
@@ -24,7 +24,11 @@ public class DAOVeiculo extends DAO {
 
             if(qtd >= 1){
                 System.out.println("Veiculo inserido com sucesso");
-                //provavelmente vou ter q pegar a generatedKey
+                ResultSet rs = pstmt.getGeneratedKeys();
+                if (rs.next()) {
+                v.setId(rs.getLong(1));
+                }
+
             }
         } catch(Exception e){
             e.printStackTrace();
@@ -55,10 +59,40 @@ public class DAOVeiculo extends DAO {
 
     //Atualizar Veiculo (UPDATE)
     public void updateVeiculo(Veiculo v){
-        String sqlUpdate = "UPDATE veiculos SET proprietario_id= ?, placa=? WHERE id=?";
+        try{
+        String sqlUpdate = "UPDATE veiculos SET proprietario_id=?, placa=? WHERE id=?";
+        PreparedStatement pstmt = super.connect().prepareStatement(sqlUpdate);
+        pstmt.setLong(1, v.getProprietarioId());
+        pstmt.setString(2, v.getPlaca());
+        pstmt.setLong(3, v.getId());
+        int qtd = pstmt.executeUpdate();
+        if(qtd >= 1){
+            System.out.println("Veiculo atualizado com sucesso");
+        } else{
+            System.out.println("Nenhum registro encontrado");
+        }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
     //Excluir Veiculo (DELETE)
-    public void deleteVeiculo(){
+    public void deleteVeiculo(Veiculo v){
+        try{
+            String sqlDelete = "DELETE FROM veiculos WHERE id = ?";
+            PreparedStatement pstmt = super.connect().prepareStatement(sqlDelete);
+            pstmt.setLong(1, v.getId());
 
+            int qtd = pstmt.executeUpdate();
+            if(qtd>= 1){
+                System.out.println("Veiculo deletado com sucesso");
+            } else{
+                System.out.println("Veiculo não encontrado");
+            }
+
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+         
     }
 }
