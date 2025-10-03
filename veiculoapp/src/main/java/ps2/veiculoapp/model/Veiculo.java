@@ -1,42 +1,58 @@
 package ps2.veiculoapp.model;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "veiculos")
 public class Veiculo {
-    @Id @GeneratedValue
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long proprietarioId;
+
     private String placa;
 
-    public Veiculo(){
+    @ManyToOne
+    @JoinColumn(name = "proprietario_id")
+    private Proprietario proprietario;
+
+    public Veiculo() {
 
     }
 
-    public Veiculo(Long id, Long proprietarioId, String placa){
+    public Veiculo(Long id, String placa, Proprietario proprietario) {
         this.id = id;
-        this.proprietarioId = proprietarioId;
         this.placa = placa;
+        this.proprietario = proprietario;
     }
 
-    public void setId(Long id){
-        this.id = id;
-    }
-    public void setProprietarioId(Long proprietarioId){
-        this.proprietarioId = proprietarioId;
-    }
-    public void setPlaca(String placa){
-        this.placa = placa;
-    }
-
-    public Long getId(){
+    public Long getId() {
         return id;
     }
-    public Long getProprietarioId(){
-        return proprietarioId;
+
+    public void setId(Long id) {
+        this.id = id;
     }
-    public String getPlaca(){
+
+    public String getPlaca() {
         return placa;
     }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public Proprietario getProprietario() {
+        return proprietario;
+    }
+
+    public void setProprietario(Proprietario proprietario) {
+        this.proprietario = proprietario;
+    }
+
+    @Override
+    public String toString() {
+        return "Veiculo{id=" + id + ", placa='" + placa + "', proprietario=" + (proprietario != null ? proprietario.getNome() : "null") + "}";
+    }
+
 }
